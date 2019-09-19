@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul 25 16:20:22 2019
+
+@author: pandoora
+"""
+
+from collections import defaultdict
+import random
+import os
+
+def get_save(text, order):
+    save = defaultdict(list)
+
+    for i in range(len(text)-order):
+        gram = text[i:i+order]
+        if gram not in save:
+            save.update({gram : [text[i+order]]})          
+        else:    
+            save[gram].append(text[i+order]) 
+    return save    
+
+def markovIt(text, order, length):
+    
+    save  = get_save(text, order)
+    #print(save)
+    
+    first_index = random.randint(0, len(text)-order)
+    currentgram  = text[first_index: first_index+order]
+    result   = currentgram
+    
+    for i in range(length):
+        possibilities = save[currentgram]
+        if possibilities:
+            next_choice   = random.choice(possibilities)
+        #creating random charachter from all the possibility
+        result += str(next_choice) 
+        currentgram = result[len(result) -order :len(result)]  
+
+    return result[len((result).split(" ")[0])+1:] 
+
+save  = get_save(text, 2)
+
+text = "Wikipedia ist ein am 15. Januar 2001 gegründetes Projekt zur Erstellung eines Onlinelexikons in zahlreichen Sprachen. Es bietet freie, \
+also kostenlose und zur Weiterverbreitung gedachte, unter lexikalischen Einträgen zu findende Artikel. "
+
+
+markovIt(text, 2, 200)
